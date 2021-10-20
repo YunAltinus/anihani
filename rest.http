@@ -1,0 +1,54 @@
+@BASE_URL = http://localhost:3000/api
+
+###
+GET {{BASE_URL}}
+
+###
+GET {{BASE_URL}}/admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMjU3ZGUwOWY4MzE5NDhlNGM0N2Q1NCIsImlhdCI6MTYxMzQxOTMxNywiZXhwIjoxNjEzNTA1NzE3fQ.aOccG3r8QN5dY7OuUx6d5nM9NulmHaHStznBsry4M00
+
+###
+GET {{BASE_URL}}/users/602054f07df15c2af0803590
+
+###
+GET {{BASE_URL}}/users/me
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMjU0ZDNhMTE3MjYwNGM3YzMxODM2ZCIsImlhdCI6MTYxMzA1NzMzOCwiZXhwIjoxNjEzMTQzNzM4fQ.1jjvZPzIL_-Phc5cFXshV9EeZ01XkXihWsqobloqg80
+
+### 
+POST {{BASE_URL}}/users
+Content-Type: application/json
+
+{
+    "email":"aaaaa@gmail.com",
+    "username": "aaaaa",
+    "password":"123123",
+    "isAdmin": true
+}
+###
+POST {{BASE_URL}}/users/login
+Content-Type: application/json
+
+{
+    "email":"emre1@gmail.com",
+    "password":"123123"
+}
+###
+DELETE {{BASE_URL}}/users/60205a96e960e620c0c673b1
+
+###
+PATCH {{BASE_URL}}/users/6024440a1e191d2dcca88fdc
+Content-Type: application/json
+
+{
+    "username":"yunuszxc"
+}
+
+###
+PATCH {{BASE_URL}}/users/me
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMjQ0NDBhMWUxOTFkMmRjY2E4OGZkYyIsImlhdCI6MTYxMjk4OTgxNywiZXhwIjoxNjEzMDc2MjE3fQ.VBuaylPMLmU2CcJY39FtX0fxgoKo8aV-kfVLPAfkOtw
+
+{
+    "username": "yunusssssdzxc",
+    "password":"1231232aaa2"
+}
