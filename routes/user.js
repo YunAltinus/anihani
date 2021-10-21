@@ -10,7 +10,7 @@ const {
 
 router.get("/profile/:userId", authMiddleware, getMyProfile)
 
-router.post("/", authMiddleware, register)
+router.post("/", register)
 
 router.post("/login", login)
 
