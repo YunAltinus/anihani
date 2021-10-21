@@ -1,30 +1,22 @@
-const BaseServise = require("./base-service")
+const BaseService = require("./base-service")
 const User = require("../models/User")
 const jwt = require("jsonwebtoken")
-const Joi = require("joi")
+const schema = require("../lib/validation")
 const bcrypt = require("bcrypt")
 
-class UserService extends BaseServise {
-  getTokenFromUserModel() {
+class UserService extends BaseService {
+  getTokenFromUser(id) {
     const { JWT_SECRET_KEY, JWT_EXPIRE } = process.env
 
-    const token = jwt.sign({ id: this._id }, JWT_SECRET_KEY, {
+    const token = jwt.sign({ id }, JWT_SECRET_KEY, {
       expiresIn: JWT_EXPIRE,
     })
 
     return token
   }
 
-  joiValidation(user) {
-    const schema = Joi.object({
-      username: Joi.min(2),
-      email: Joi.email(),
-      password: Joi.min(6),
-    })
-
-    schema.string().required().trim()
-
-    return schema.validate(user)
+  async joiValidationForRegister(user) {
+    return schema.validateAsync(user)
   }
 
   toJSON(user) {
@@ -40,15 +32,13 @@ class UserService extends BaseServise {
   async login(email, password) {
     const user = await this.findOne({ email })
 
-    const checkedPassword = await bcrypt.compare(password, user.password)
+    const checkedPassword = await bcrypt.compare(password, user?.password)
 
     if (!user || !checkedPassword)
       throw createError(400, "Girilen email/şifre hatalıdır!")
 
     return user
   }
-
-  async getMyProfile() {}
 }
 
 module.exports = new UserService(User)
