@@ -4,15 +4,15 @@ class BaseService {
   }
 
   async save(object) {
-    this.model.insertMany(object)
+    return this.model.insertMany(object)
   }
 
   async load() {
-    this.model.find()
+    return this.model.find()
   }
 
   async insert(object) {
-    this.model.create(object)
+    return await this.model.create(object)
   }
 
   async findById(id) {
