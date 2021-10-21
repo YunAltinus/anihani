@@ -1,33 +1,16 @@
 const createError = require("http-errors")
-const { userServise } = require("../services")
+const { userService } = require("../services")
 
-const getMyProfile = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
-    const user = await userServise.findById(req.id)
+    await userService.joiValidationForRegister(req.body)
 
-    res.json({ message: "OK", user })
+    const user = await userService.insert(req.body)
+    const token = await userService.getTokenFromUser(user._id)
+
+    return res.status(200).json({ user, token })
   } catch (err) {
-    res.status(404).json({ message: "Kullanıcı bulunamadı" })
-  }
-}
-
-const register = async ({ body }, res, next) => {
-  try {
-    const newUser = await new User(body)
-    // Methods kullanabilmek için user modelinin oluşması gerek!
-    const { error } = newUser.joiValidation()
-
-    if (error) {
-      next(createError(400, error))
-    } else {
-      const token = await newUser.getTokenFromUserModel()
-
-      const user = await newUser.save()
-
-      return res.status(200).json({ user, token })
-    }
-  } catch (err) {
-    next(err)
+    next(createError(400, err))
   }
 }
 
@@ -41,6 +24,16 @@ const login = async (req, res, next) => {
     return res.json({ user, token })
   } catch (err) {
     next(err)
+  }
+}
+
+const getMyProfile = async (req, res, next) => {
+  try {
+    const user = await userService.findById(req.id)
+
+    res.json({ message: "OK", user })
+  } catch (err) {
+    res.status(404).json({ message: "Kullanıcı bulunamadı" })
   }
 }
 
