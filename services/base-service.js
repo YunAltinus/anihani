@@ -23,8 +23,8 @@ class BaseService {
     return this.model.find({ [property]: value })
   }
 
-  async findOne(value) {
-    return this.model.findOne({ value })
+  async findOne(property, value) {
+    return this.model.findOne({ [property]: value })
   }
 
   async removeBy(property, value) {
