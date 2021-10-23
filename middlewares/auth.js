@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const User = require("../models/User")
+const { userService } = require("../services")
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -7,10 +7,11 @@ const authMiddleware = async (req, res, next) => {
 
     const { id } = await jwt.verify(token, process.env.JWT_SECRET_KEY)
 
-    const user = await User.findById(id)
+    const user = await userService.findById(id)
 
     if (!user) throw new Error("Lütfen giriş yapınız")
-    else req.user = user
+
+    req.user = user
 
     next()
   } catch (error) {
