@@ -1,14 +1,39 @@
 const createError = require("http-errors")
 const { userService } = require("../services")
 
+const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await userService.findById(req.params?.userId)
+
+    if (!user) res.status(404).json({ message: "Kullanici bulunamadi" })
+
+    return res.status(200).json({ user })
+  } catch (error) {
+    next(createError(400, "kullanici bulunamadi"))
+  }
+}
+
 const register = async (req, res, next) => {
   try {
-    await userService.joiValidationForRegister(req.body)
+    const hashToUser = await userService.preSaveHashToPassword(req.body)
 
-    const user = await userService.insert(req.body)
-    const token = await userService.getTokenFromUser(user._id)
+    const user = await userService.insert(hashToUser)
+    if (!user) res.status(500).json({ message: "Kullanici olusturulamadi" })
 
-    return res.status(200).json({ user, token })
+    const accessToken = userService.generateAccessToken(user)
+    const refleshToken = userService.generateRefleshToken(user)
+
+    const newUser = {
+      ...user?.toObject(),
+      token: {
+        accessToken,
+        refleshToken,
+      },
+    }
+
+    delete newUser.password
+
+    return res.json(newUser)
   } catch (err) {
     next(createError(400, err))
   }
@@ -16,59 +41,55 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body
+
   try {
-    const user = await User.login(email, password)
+    const user = await userService.login(email, password)
 
-    const token = await user.getTokenFromUserModel()
+    const accessToken = userService.generateAccessToken(user)
+    const refleshToken = userService.generateRefleshToken(user)
 
-    return res.json({ user, token })
+    const newUser = {
+      ...user.toObject(),
+      token: {
+        accessToken,
+        refleshToken,
+      },
+    }
+
+    delete newUser.password
+
+    return res.json(newUser)
   } catch (err) {
     next(err)
   }
 }
 
-const getMyProfile = async (req, res, next) => {
-  try {
-    const user = await userService.findById(req.id)
-
-    res.json({ message: "OK", user })
-  } catch (err) {
-    res.status(404).json({ message: "Kullanıcı bulunamadı" })
-  }
-}
-
 const updateMyProfile = async (req, res, next) => {
-  delete req.body.createdAt
-  delete req.body.updatedAt
-
   const { id } = req.user
-  const { error } = await User.joiValidationForUpdate(req.body)
 
-  if (error) {
-    next(createError(400, error))
-  } else {
-    try {
-      const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true,
-      })
+  try {
+    await userService.joiValidation(req.body)
 
-      if (updatedUser) {
-        return res.json({
-          message: "Kullanıcı güncellendi!",
-          updatedUser,
-        })
-      } else {
-        throw createError(404, "Kullanıcı bulunamadı!")
-      }
-    } catch (err) {
-      next(err)
-    }
+    const hashToUser = await userService.preSaveHashToPassword(req.body)
+
+    const updatedUser = await userService.update(id, hashToUser, {
+      new: true,
+      runValidators: true,
+    })
+
+    if (!updatedUser) next(createError(404, "Kullanıcı güncellenemedi!"))
+
+    return res.json({
+      message: "Kullanıcı güncellendi!",
+      updatedUser,
+    })
+  } catch (err) {
+    next(err)
   }
 }
 module.exports = {
-  getMyProfile,
+  getUserProfile,
   register,
-  login,
   updateMyProfile,
+  login,
 }
