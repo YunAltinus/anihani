@@ -14,7 +14,7 @@ const {
 
 router.get("/profile/:userId", getUserProfile)
 
-router.post("/", validate(registerValidation), register)
+router.post("/register", validate(registerValidation), register)
 
 router.post("/login", validate(loginValidation), login)
 
