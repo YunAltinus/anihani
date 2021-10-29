@@ -1,16 +1,21 @@
 const express = require("express")
 const app = express()
-const routes = require("./routes")
+const config = require("./config")
+const loaders = require("./loaders")
+const { user } = require("./routes")
 const errorHandler = require("./middlewares/errorHandler")
+const helmet = require("helmet")
 
-require("dotenv").config()
+config()
+loaders()
 
-require("./db/connectDb")
+require("./loaders/mongo-connect")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(helmet())
 
-app.use("/api", routes)
+app.use("/", user)
 
 app.use(errorHandler)
 
