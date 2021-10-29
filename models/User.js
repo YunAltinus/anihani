@@ -6,38 +6,20 @@ const UserSchema = new Schema(
     username: {
       type: String,
       unique: true,
-      require: true,
     },
-    password: {
-      type: String,
-      require: true,
-    },
+
+    password: String,
+
     email: {
       type: String,
       unique: true,
-      require: true,
     },
-    isAdmin: Boolean,
+
     birth: String,
+
+    isAdmin: Boolean,
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 )
-
-// Password hashing before saving to database
-// UserSchema.pre("save", function (next) {
-//   if (!this.isModified("password")) next()
-
-//   bcrypt.genSalt(10, (err, salt) => {
-//     if (err) next(err)
-
-//     bcrypt.hash(this.password, salt, (err, hash) => {
-//       if (err) next(err)
-
-//       this.password = hash
-
-//       next()
-//     })
-//   })
-// })
 
 module.exports = mongoose.model("User", UserSchema)
