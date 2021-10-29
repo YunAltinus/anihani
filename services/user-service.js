@@ -1,6 +1,5 @@
 const BaseService = require("./base-service")
 const User = require("../models/User")
-const schema = require("../lib/validation")
 const createError = require("http-errors")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
@@ -26,28 +25,22 @@ class UserService extends BaseService {
     return user
   }
 
-  getTokenFromUserService(id) {
-    const { JWT_SECRET_KEY, JWT_EXPIRE } = process.env
+  generateAccessToken(user) {
+    const { JWT_ACCESS_SECRET_KEY, JWT_EXPIRE } = process.env
 
-    const token = jwt.sign({ id }, JWT_SECRET_KEY, {
+    const accessToken = jwt.sign({ user }, JWT_ACCESS_SECRET_KEY, {
       expiresIn: JWT_EXPIRE,
     })
 
-    return token
+    return accessToken
   }
 
-  async joiValidation(user) {
-    return schema.validateAsync(user)
-  }
+  generateRefleshToken(user) {
+    const { JWT_REFLESH_SECRET_KEY } = process.env
 
-  toJSON(user) {
-    delete user["password"]
-    delete user["createdAt"]
-    delete user["updatedAt"]
-    delete user["__v"]
-    console.log("json", user)
+    const accessToken = jwt.sign({ user }, JWT_REFLESH_SECRET_KEY)
 
-    return user
+    return accessToken
   }
 }
 
