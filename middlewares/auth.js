@@ -5,9 +5,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     const token = await req.header("Authorization").split(" ")[1]
 
-    const { id } = await jwt.verify(token, process.env.JWT_SECRET_KEY)
-
-    const user = await userService.findById(id)
+    const { user } = await jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY)
 
     if (!user) throw new Error("Lütfen giriş yapınız")
 
