@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const UserSchema = new Schema(
+const AnimeSchema = new Schema(
   {
     title: {
       type: String,
@@ -24,6 +24,14 @@ const UserSchema = new Schema(
       enum: ["winter", "spring", "summer", "fall"],
     },
 
+    favorites: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        autopopulate: { maxDepth: 1 },
+      },
+    ],
+
     score: Number,
 
     popularity: Number,
@@ -37,4 +45,6 @@ const UserSchema = new Schema(
   { timestamps: true, versionKey: false }
 )
 
-module.exports = mongoose.model("User", UserSchema)
+AnimeSchema.plugin(require("mongoose-autopopulate"))
+
+module.exports = mongoose.model("Anime", AnimeSchema)
