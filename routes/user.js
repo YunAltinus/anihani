@@ -10,18 +10,21 @@ const {
   register,
   login,
   updateMyProfile,
+  getAllUser,
 } = require("../controllers/user")
+
+router.get("/users", getAllUser)
+
+router.patch(
+  "/profile/:userId",
+  [authMiddleware, validate(loginValidation)],
+  updateMyProfile
+)
 
 router.get("/profile/:userId", getUserProfile)
 
 router.post("/register", validate(registerValidation), register)
 
 router.post("/login", validate(loginValidation), login)
-
-router.patch(
-  "/profile",
-  [authMiddleware, validate(loginValidation)],
-  updateMyProfile
-)
 
 module.exports = router
