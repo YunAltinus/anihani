@@ -2,20 +2,19 @@ const express = require("express")
 const app = express()
 const config = require("./config")
 const loaders = require("./loaders")
-const { user } = require("./routes")
+const { user, anime } = require("./routes")
 const errorHandler = require("./middlewares/errorHandler")
 const helmet = require("helmet")
 
 config()
 loaders()
 
-require("./loaders/mongo-connect")
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 
 app.use("/", user)
+app.use("/anime", anime)
 
 app.use(errorHandler)
 
