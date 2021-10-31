@@ -1,6 +1,7 @@
 const user = require("./user")
-const admin = require("./admin")
+const anime = require("./anime")
 
 module.exports = {
   user,
+  anime,
 }
