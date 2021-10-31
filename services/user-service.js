@@ -7,11 +7,11 @@ const bcrypt = require("bcrypt")
 class UserService extends BaseService {
   async login(email, password) {
     const user = await this.findOne(email)
+    if (!user) createError(400, "Bu emaile ait kullanıcı bulunamadı")
 
     const checkedPassword = await bcrypt.compare(password, user?.password)
 
-    if (!user || !checkedPassword)
-      throw createError(400, "Girilen email/şifre hatalıdır!")
+    if (!checkedPassword) createError(400, "parola hatalı")
 
     return user
   }
