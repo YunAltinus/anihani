@@ -86,7 +86,7 @@ const login = async (req, res, next) => {
 
 const updateMyProfile = async (req, res, next) => {
   const { _id } = req.user
-  const updateUser = req.body
+  let updateUser = req.body
 
   try {
     if (updateUser?.password)
