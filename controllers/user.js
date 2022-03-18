@@ -89,7 +89,7 @@ const updateMyProfile = async (req, res, next) => {
   const updateUser = req.body
 
   try {
-    if (updateUser.password)
+    if (updateUser?.password)
       updateUser = await userService.preSaveHashToPassword(updateUser)
 
     const user = await userService.update(_id, updateUser)
