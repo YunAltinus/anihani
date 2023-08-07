@@ -13,8 +13,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 
-app.use("/", user)
-app.use("/anime", anime)
+app.use("/api/", user)
+app.use("/api/anime", anime)
 
 app.use(errorHandler)
 
